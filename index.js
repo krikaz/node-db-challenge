@@ -21,7 +21,9 @@ function createAction(action) {
 	});
 }
 
-function getActionsByProjectId(project_id) {}
+function getActionsByProjectId(project_id) {
+  
+}
 
 app.post('/api/projects', async (req, res, next) => {
 	try {
@@ -35,6 +37,16 @@ app.post('/api/projects', async (req, res, next) => {
 app.post('/api/actions', async (req, res, next) => {
 	try {
 		const result = await createAction(req.body);
+		res.json(result);
+	} catch (error) {
+		next(error);
+	}
+});
+
+app.get('/api/projects/:id', async (req, res, next) => {
+	try {
+		const { id } = req.params;
+		const result = await getActionsByProjectId(id);
 		res.json(result);
 	} catch (error) {
 		next(error);

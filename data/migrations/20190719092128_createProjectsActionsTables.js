@@ -11,6 +11,10 @@ exports.up = function(knex) {
 			table.text('description', 256).notNullable();
 			table.text('notes');
 			table.boolean('completed');
+			table
+				.integer('project_id')
+				.notNullable()
+				.unsigned();
 		});
 };
 
