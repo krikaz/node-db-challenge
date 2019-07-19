@@ -24,13 +24,22 @@ function createAction(action) {
 function getActionsByProjectId(project_id) {}
 
 app.post('/api/projects', async (req, res, next) => {
-  try {
-    const result = await createProject(req.body);
-    res.json(result);
-  } catch (error) {
-    next(error);
-  }
-})
+	try {
+		const result = await createProject(req.body);
+		res.json(result);
+	} catch (error) {
+		next(error);
+	}
+});
+
+app.post('/api/actions', async (req, res, next) => {
+	try {
+		const result = await createAction(req.body);
+		res.json(result);
+	} catch (error) {
+		next(error);
+	}
+});
 
 app.listen(4000, () => {
 	console.log('listening on 4000');
