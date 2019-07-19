@@ -21,14 +21,6 @@ function createAction(action) {
 	});
 }
 
-// function getActionsByProjectId(project_id) {
-// 	return db
-// 		.select('*')
-// 		.from('projects')
-// 		.innerJoin('actions', 'projects.id', 'actions.project_id')
-// 		.where('projects.id', project_id);
-// }
-
 async function getActionsByProjectId(project_id) {
 	const actions = await db
 		.select(
@@ -49,6 +41,25 @@ async function getActionsByProjectId(project_id) {
 		description: project[0].description,
 		completed: project[0].completed,
 		actions: actions,
+	};
+}
+
+async function getContextsByActionId(action_id) {
+	const contexts = await db
+		.select('contexts.name')
+		.from('contexts')
+		.innerJoin('links', 'contexts.id', 'links.context_id')
+		.where('links.action_id', action_id);
+	const action = await db
+		.select('*')
+		.from('actions')
+		.where('actions.id', action_id);
+	return {
+		id: action[0].id,
+		description: action[0].description,
+		notes: action[0].notes,
+		completed: action[0].completed,
+		contexts: contexts,
 	};
 }
 
@@ -74,6 +85,16 @@ app.get('/api/projects/:id/actions', async (req, res, next) => {
 	try {
 		const { id } = req.params;
 		const result = await getActionsByProjectId(id);
+		res.json(result);
+	} catch (error) {
+		next(error);
+	}
+});
+
+app.get('/api/actions/:id/contexts', async (req, res, next) => {
+	try {
+		const { id } = req.params;
+		const result = await getContextsByActionId(id);
 		res.json(result);
 	} catch (error) {
 		next(error);
