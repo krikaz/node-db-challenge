@@ -22,7 +22,10 @@ function createAction(action) {
 }
 
 function getActionsByProjectId(project_id) {
-  
+	return db
+		.select('*')
+		.from('projects')
+		.innerJoin('actions', 'projects.id', 'actions.project_id');
 }
 
 app.post('/api/projects', async (req, res, next) => {
@@ -43,7 +46,7 @@ app.post('/api/actions', async (req, res, next) => {
 	}
 });
 
-app.get('/api/projects/:id', async (req, res, next) => {
+app.get('/api/projects/:id/actions', async (req, res, next) => {
 	try {
 		const { id } = req.params;
 		const result = await getActionsByProjectId(id);
