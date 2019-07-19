@@ -21,11 +21,35 @@ function createAction(action) {
 	});
 }
 
-function getActionsByProjectId(project_id) {
-	return db
+// function getActionsByProjectId(project_id) {
+// 	return db
+// 		.select('*')
+// 		.from('projects')
+// 		.innerJoin('actions', 'projects.id', 'actions.project_id')
+// 		.where('projects.id', project_id);
+// }
+
+async function getActionsByProjectId(project_id) {
+	const actions = await db
+		.select(
+			'actions.id',
+			'actions.description',
+			'actions.notes',
+			'actions.completed'
+		)
+		.from('actions')
+		.where('actions.project_id', project_id);
+	const project = await db
 		.select('*')
 		.from('projects')
-		.innerJoin('actions', 'projects.id', 'actions.project_id');
+		.where('projects.id', project_id);
+	return {
+		id: project[0].id,
+		name: project[0].name,
+		description: project[0].description,
+		completed: project[0].completed,
+		actions: actions,
+	};
 }
 
 app.post('/api/projects', async (req, res, next) => {
